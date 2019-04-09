@@ -1,22 +1,28 @@
-require("dotenv").config();
 const express = require("express");
+const bodyParser = require("body-parser");
 const massive = require("massive");
 const app = express();
-const bodyParser = require("body-parser");
 const controller = require("./controller");
+require("dotenv").config();
+app.use(bodyParser.json());
 
-const { SERVER_PORT, CONNECTION_STRING } = process.env;
-
-massive(CONNECTION_STRING)
-  .then(dbInstance => {
-    app.set("db", dbInstance);
+massive(process.env.CONNECTION_STRING)
+  .then(db => {
+    console.log("Connected to database.");
+    app.set("db", db);
+    db.init();
   })
-  .catch(err => console.log(err));
+  .catch(err => {
+    console.log(err);
+  });
 
+app.get("/api/inventory", controller.allProducts);
+app.get("/api/inventory/:id", controller.getProduct);
 app.post("/api/product", controller.addProduct);
-app.get("/api/product", controller.getProduct);
+app.delete("/api/inventory/:id", controller.deleteProduct);
+app.put("/api/inventory/:id", controller.updateProduct);
 
-
-app.listen(SERVER_PORT, () => {
-  console.log(`Server listening on port ${SERVER_PORT}.`);
+const port = process.env.PORT || 4000;
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });

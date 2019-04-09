@@ -1,27 +1,26 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 
-
-
-class Product extends Component {
-  
-  state = {  }
-  render() { 
-    return ( 
-      <div className='product'>
-      <div className='image'>
-          <img src={this.props.imageURL} className = 'product-image' />
-       </div>
-
-      <div className = 'name-price'>
-              <h1>{this.props.name}</h1>
-              <h3>{`${this.props.price}`}</h3>
-      </div>
-  </div>
-      );
-  }
+export default function Product(props) {
+  const { deleteProduct, selectedProduct } = props;
+  return (
+    <div>
+      <h1>{props.product.name}</h1>
+      <p>{props.product.price}</p>
+      <img className="daImage" src={props.product.img} />
+      <button
+        onClick={event => {
+          deleteProduct(props.product.id);
+        }}
+      >
+        Delete
+      </button>
+      <button
+        onClick={event => {
+          selectedProduct(props.product);
+        }}
+      >
+        Edit
+      </button>
+    </div>
+  );
 }
-export default Product;
-
-
-
-  
